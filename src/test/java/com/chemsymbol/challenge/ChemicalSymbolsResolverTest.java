@@ -8,13 +8,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Test suite for {@link com.chemsymbol.challenge.ChemicalSymbolsStreamResolver}
+ * Test suite for {@link ChemicalSymbolsResolverImpl}
  *
  * Created by Jan Koren on 8/8/2016.
  */
 public class ChemicalSymbolsResolverTest {
 
-    private ChemicalSymbolsStreamResolver resolver = new ChemicalSymbolsStreamResolver();
+    private ChemicalSymbolsResolverImpl resolver = new ChemicalSymbolsResolverImpl();
 
     @Test
     public void elementOfOneLetterSymbolOfOneLetter() {

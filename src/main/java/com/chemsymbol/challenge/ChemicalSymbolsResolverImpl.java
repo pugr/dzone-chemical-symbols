@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toSet;
  *
  * Created by Jan Koren on 8/10/2016.
  */
-public class ChemicalSymbolsStreamResolver implements ChemicalSymbolsResolver {
+public class ChemicalSymbolsResolverImpl implements ChemicalSymbolsResolver {
 
     private static final byte SYMBOL_LENGTH = 2;
 
@@ -68,7 +68,7 @@ public class ChemicalSymbolsStreamResolver implements ChemicalSymbolsResolver {
     private Set<String> createSymbolSubset(char firstLetter, String rightSubstring) {
         return rightSubstring.chars()
                 .mapToObj(secondLetter -> String.valueOf(firstLetter) + (char) secondLetter)
-                .map(ChemicalSymbolsStreamResolver::normalizeSymbol)
+                .map(ChemicalSymbolsResolverImpl::normalizeSymbol)
                 .collect(toSet());
     }
 
