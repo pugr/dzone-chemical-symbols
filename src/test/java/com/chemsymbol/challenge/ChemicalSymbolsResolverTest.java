@@ -1,5 +1,6 @@
 package com.chemsymbol.challenge;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,6 +16,32 @@ import static org.junit.Assert.fail;
 public class ChemicalSymbolsResolverTest {
 
     private ChemicalSymbolsResolverImpl resolver = new ChemicalSymbolsResolverImpl();
+
+    @Test
+    public void elementNull() {
+        final String element = null;
+        final String symbol = "Ag";
+
+        try {
+            resolver.isValidSymbolOf(element, symbol);
+        } catch (NullPointerException e) {
+            return;
+        }
+        fail("Null element check failed.");
+    }
+
+    @Test
+    public void symbolNull() {
+        final String element = "Silver";
+        final String symbol = null;
+
+        try {
+            resolver.isValidSymbolOf(element, symbol);
+        } catch (NullPointerException e) {
+            return;
+        }
+        fail("Null symbol check failed.");
+    }
 
     @Test
     public void elementOfOneLetterSymbolOfOneLetter() {
@@ -242,6 +269,16 @@ public class ChemicalSymbolsResolverTest {
     }
 
     @Test
+    public void getNumberOfValidSymbolsElementNull() {
+        try {
+            resolver.getNumberOfValidSymbols(null);
+        } catch (NullPointerException e) {
+            return;
+        }
+        fail("Element null check failed.");
+    }
+
+    @Test
     public void getNumberOfValidSymbols() {
         final int numberOfValidSymbols = resolver.getNumberOfValidSymbols("Zuulon");
         assertEquals(11, numberOfValidSymbols);
@@ -257,6 +294,16 @@ public class ChemicalSymbolsResolverTest {
     public void getNumberOfValidSymbolsExpectThree() {
         final int numberOfValidSymbols = resolver.getNumberOfValidSymbols("Aaaabaaa");
         assertEquals(3, numberOfValidSymbols);
+    }
+
+    @Test
+    public void getFirstSymbolElementNull() {
+        try {
+            resolver.getFirstSymbol(null);
+        } catch (NullPointerException e) {
+            return;
+        }
+        fail("Element null check failed.");
     }
 
     @Test
