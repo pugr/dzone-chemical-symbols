@@ -10,12 +10,17 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 /**
+ * Implementation of {@link com.chemsymbol.challenge.ChemicalSymbolsResolver}
+ *
  * Created by Jan Koren on 8/10/2016.
  */
 public class ChemicalSymbolsStreamResolver implements ChemicalSymbolsResolver {
 
     private static final byte SYMBOL_LENGTH = 2;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValidSymbolOf(String element, String symbol) {
         Preconditions.checkNotNull(symbol);
@@ -25,10 +30,7 @@ public class ChemicalSymbolsStreamResolver implements ChemicalSymbolsResolver {
     }
 
     /**
-     * Given an element name, finds the valid symbol for that name that's first in alphabetical order.
-     *
-     * @param element The element name.
-     * @return The first symbol in alphabetical order.
+     * {@inheritDoc}
      */
     @Override
     public String getFirstSymbol(String element) {
@@ -43,6 +45,13 @@ public class ChemicalSymbolsStreamResolver implements ChemicalSymbolsResolver {
         return getPossibleSymbolCombinations(element).size();
     }
 
+    /**
+     * Creates all possible two-character symbol combinations for the input element. Alphabetical order of the combinations is not guaranteed.
+     * Example: Gold --> Go, Gl, Gd, Ol, Od, Ld
+     *
+     * @param element The input element.
+     * @return All possible symbol combinations for the element.
+     */
     private Set<String> getPossibleSymbolCombinations(String element) {
         Preconditions.checkNotNull(element);
         Preconditions.checkArgument(element.length() >= SYMBOL_LENGTH, String.format("Element %s must be at least %d characters long", element, SYMBOL_LENGTH));
@@ -58,10 +67,7 @@ public class ChemicalSymbolsStreamResolver implements ChemicalSymbolsResolver {
 
     private Set<String> createSymbolSubset(char firstLetter, String rightSubstring) {
         return rightSubstring.chars()
-                .mapToObj(secondLetter -> new StringBuilder()
-                        .append(firstLetter)
-                        .append((char) secondLetter)
-                        .toString())
+                .mapToObj(secondLetter -> String.valueOf(firstLetter) + (char) secondLetter)
                 .map(ChemicalSymbolsStreamResolver::normalizeSymbol)
                 .collect(toSet());
     }
