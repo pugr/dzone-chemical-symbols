@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
  */
 public class ChemicalSymbolsResolverTest {
 
+    public static final String ELEMENT_NULL_CHECK_FAILED = "Element null check failed.";
     private ChemicalSymbolsResolverImpl resolver = new ChemicalSymbolsResolverImpl();
 
     @Test
@@ -27,7 +28,7 @@ public class ChemicalSymbolsResolverTest {
         } catch (NullPointerException e) {
             return;
         }
-        fail("Null element check failed.");
+        fail(ELEMENT_NULL_CHECK_FAILED);
     }
 
     @Test
@@ -40,7 +41,7 @@ public class ChemicalSymbolsResolverTest {
         } catch (NullPointerException e) {
             return;
         }
-        fail("Null symbol check failed.");
+        fail(ELEMENT_NULL_CHECK_FAILED);
     }
 
     @Test
@@ -275,7 +276,7 @@ public class ChemicalSymbolsResolverTest {
         } catch (NullPointerException e) {
             return;
         }
-        fail("Element null check failed.");
+        fail(ELEMENT_NULL_CHECK_FAILED);
     }
 
     @Test
@@ -303,7 +304,7 @@ public class ChemicalSymbolsResolverTest {
         } catch (NullPointerException e) {
             return;
         }
-        fail("Element null check failed.");
+        fail(ELEMENT_NULL_CHECK_FAILED);
     }
 
     @Test
