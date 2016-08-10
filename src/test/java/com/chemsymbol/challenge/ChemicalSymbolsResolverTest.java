@@ -2,33 +2,44 @@ package com.chemsymbol.challenge;
 
 import org.junit.Test;
 
-import java.util.Set;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Created by Jan on Koren 8/8/2016.
+ * Test suite for {@link com.chemsymbol.challenge.ChemicalSymbolsStreamResolver}
+ *
+ * Created by Jan Koren on 8/8/2016.
  */
 public class ChemicalSymbolsResolverTest {
 
     private ChemicalSymbolsStreamResolver resolver = new ChemicalSymbolsStreamResolver();
-//    private ChemicalSymbolsResolverImpl resolver = new ChemicalSymbolsResolverImpl();
 
-    //All chemical symbols must be exactly two letters, so B is not a valid symbol for Boron.
     @Test
-    public void elementOfOneLetter() {
+    public void elementOfOneLetterSymbolOfOneLetter() {
         final String element = "B";
         final String symbol = "B";
         try {
             resolver.isValidSymbolOf(element, symbol);
         } catch (IllegalArgumentException e) {
-            assertEquals("Element B must be at least 2 characters long", e.getMessage());
+            assertEquals(String.format("Symbol %s is not 2 characters long", symbol), e.getMessage());
             return;
         }
-        fail("expected IllegalArgumentException for element: " + element);
+        fail("expected IllegalArgumentException for symbol: " + element);
+    }
+
+    @Test
+    public void elementOfOneLetterSymbolOfTwoLetters() {
+        final String element = "B";
+        final String symbol = "Be";
+        try {
+            resolver.isValidSymbolOf(element, symbol);
+        } catch (IllegalArgumentException e) {
+            assertEquals(String.format("Element %s must be at least 2 characters long", element), e.getMessage());
+            return;
+        }
+        fail("expected IllegalArgumentException for symbol: " + element);
     }
 
     @Test
@@ -59,7 +70,6 @@ public class ChemicalSymbolsResolverTest {
         fail("expected IllegalArgumentException for element: " + element);
     }
 
-    //    Both letters in the symbol must appear in the element name, but the first letter of the element name does not necessarily need to appear in the symbol. So Hg is not valid for Mercury, but Cy is.
     @Test
     public void allSymbolLettersNotInElementName() {
         final String element = "Boron";
@@ -68,7 +78,6 @@ public class ChemicalSymbolsResolverTest {
         final boolean isValidSymbol = resolver.isValidSymbolOf(element, symbol);
 
         assertFalse(isValidSymbol);
-
     }
 
     @Test
@@ -91,11 +100,10 @@ public class ChemicalSymbolsResolverTest {
         assertFalse(isValidSymbol);
     }
 
-    //    The two letters must appear in order in the element name. So Vr is valid for Silver, but Rv is not. To be clear, both Ma and Am are valid for Magnesium, because there is both an a that appears after an m, and an m that appears after an a.
     @Test
     public void symbolLettersNotInElementOrder() {
-        final String element = "Boron";
-        final String symbol = "Nr";
+        final String element = "Magnesium";
+        final String symbol = "Ui";
 
         final boolean isValidSymbol = resolver.isValidSymbolOf(element, symbol);
 
@@ -104,19 +112,38 @@ public class ChemicalSymbolsResolverTest {
 
     @Test
     public void symbolLettersInElementOrder() {
-        final String element = "Boron";
-        final String symbol = "Bn";
+        final String element = "Magnesium";
+        final String symbol = "Ma";
 
         final boolean isValidSymbol = resolver.isValidSymbolOf(element, symbol);
 
         assertTrue(isValidSymbol);
     }
 
-    //    If the two letters in the symbol are the same, it must appear twice in the element name. So Nn is valid for Xenon, but Xx and Oo are not.
+    @Test
+    public void symbolLettersInElementOrderReverse() {
+        final String element = "Magnesium";
+        final String symbol = "Am";
+
+        final boolean isValidSymbol = resolver.isValidSymbolOf(element, symbol);
+
+        assertTrue(isValidSymbol);
+    }
+
+    @Test
+    public void sameSymbolLettersInElement() {
+        final String element = "Xenon";
+        final String symbol = "Nn";
+
+        final boolean isValidSymbol = resolver.isValidSymbolOf(element, symbol);
+
+        assertTrue(isValidSymbol);
+    }
+
     @Test
     public void sameSymbolLettersNotInElement() {
-        final String element = "Boron";
-        final String symbol = "Rr";
+        final String element = "Xenon";
+        final String symbol = "Xx";
 
         final boolean isValidSymbol = resolver.isValidSymbolOf(element, symbol);
 
@@ -124,17 +151,15 @@ public class ChemicalSymbolsResolverTest {
     }
 
     @Test
-    public void sameSymbolLettersInElement() {
-        final String element = "Boron";
-        final String symbol = "Oo";
-
-        final boolean isValidSymbol = resolver.isValidSymbolOf(element, symbol);
-
-        assertTrue(isValidSymbol);
+    public void validSymbolForElementWithMirroredCorrectSymbols() {
+        assertTrue(resolver.isValidSymbolOf("Zuulun", "Lu"));
     }
 
+    /**
+     * Tests a variety of expected correct symbols for the given element, basically all possible correct combinations (excluding case).
+     */
     @Test
-    public void variousElementsGoodSymbols() {
+    public void variousElementsCorrectSymbols() {
         assertTrue(
                 resolver.isValidSymbolOf("Zirconium", "Zi")
                         && resolver.isValidSymbolOf("Zirconium", "ZI")
@@ -172,10 +197,12 @@ public class ChemicalSymbolsResolverTest {
                         && resolver.isValidSymbolOf("Zirconium", "Iu")
                         && resolver.isValidSymbolOf("Zirconium", "Im")
                         && resolver.isValidSymbolOf("Zirconium", "Um")
-        )
-        ;
+        );
     }
 
+    /**
+     * Tests a variety of expected incorrect symbols for the given element, basically all possible incorrect combinations.
+     */
     @Test
     public void variousElementsBadSymbols() {
         assertTrue(
@@ -211,29 +238,30 @@ public class ChemicalSymbolsResolverTest {
                         && !resolver.isValidSymbolOf("Zirconium", "Rz")
                         && !resolver.isValidSymbolOf("Zirconium", "Iz")
                         && !resolver.isValidSymbolOf("Zirconium", "Zz")
-        )
-        ;
+        );
     }
 
     @Test
-    public void symbolMercury() {
-        assertTrue(resolver.isValidSymbolOf("Mercury", "Eu"));
-    }
-
-    @Test
-     public void symbolZuulun() {
-        assertTrue(resolver.isValidSymbolOf("Zuulun", "Lu"));
-    }
-
-    @Test
-    public void getNumberOfValidSymbolsZuulun() {
+    public void getNumberOfValidSymbols() {
         final int numberOfValidSymbols = resolver.getNumberOfValidSymbols("Zuulon");
         assertEquals(11, numberOfValidSymbols);
     }
 
     @Test
-    public void getFirstSymbolWutrubanibaum() {
-        final String firstSymbol = resolver.getFirstSymbol("Wutrubanibaum");
+    public void getNumberOfValidSymbolsExpectOne() {
+        final int numberOfValidSymbols = resolver.getNumberOfValidSymbols("Aaaaaaa");
+        assertEquals(1, numberOfValidSymbols);
+    }
+
+    @Test
+    public void getNumberOfValidSymbolsExpectThree() {
+        final int numberOfValidSymbols = resolver.getNumberOfValidSymbols("Aaaabaaa");
+        assertEquals(3, numberOfValidSymbols);
+    }
+
+    @Test
+    public void getFirstSymbol() {
+        final String firstSymbol = resolver.getFirstSymbol("Wutrubanibauum");
         assertEquals("Aa", firstSymbol);
     }
 
